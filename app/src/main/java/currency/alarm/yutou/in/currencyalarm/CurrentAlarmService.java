@@ -60,15 +60,13 @@ public class CurrentAlarmService extends Service {
                             Elements tds = currency.select("td");
                             if (tds != null && tds.size() > 0) {
                                 if (currency.select("td").get(0).text().equals("澳大利亚元")) {
-                                    String selling = currency.select("td").get(4).text();
-                                    String buying = currency.select("td").get(6).text();
+                                    Double selling = Double.parseDouble(currency.select("td").get(4).text());
+                                    Double buying = Double.parseDouble(currency.select("td").get(6).text());
                                     String time = currency.select("td").get(8).text();
 
-                                    notification.notify(selling, buying, time,
-                                            lastSelling > Double.parseDouble(selling) ? "↓" :
-                                                    lastSelling < Double.parseDouble(selling) ? "↑" : "-");
+                                    notification.notify(selling, buying, time, lastSelling);
 
-                                    lastSelling = Double.parseDouble(selling);
+                                    lastSelling = selling;
                                 }
                             }
                         }

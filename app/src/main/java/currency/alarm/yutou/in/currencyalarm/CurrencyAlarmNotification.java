@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
 import android.net.Uri;
 
 /**
@@ -19,15 +18,16 @@ public class CurrencyAlarmNotification {
         this.context = context;
     }
 
-    public void notify(String selling, String buying, String time, String trend) {
+    public void notify(Double selling, Double buying, String time, Double lastSelling) {
         Intent notificationIntent = new Intent();
         PendingIntent notificationPendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notification = new Notification.Builder(context)
                 .setContentTitle("AUD -> CNY")
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentText("S:" + selling + ", B:" + buying + " " + trend + " (" + time + ")")
+                .setContentText("S:" + selling + ", B:" + buying + " " +
+                        (selling > lastSelling ? "⬆️" : selling < lastSelling ? "⬇" : "→")
+                        + " (" + time + ")")
                 .setContentIntent(notificationPendingIntent)
                 .build();
         notification.flags = Notification.FLAG_ONGOING_EVENT;
@@ -35,7 +35,7 @@ public class CurrencyAlarmNotification {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notification);
 
-        if (trend.equals("↓") || trend.equals("↑")) {
+        if (Math.abs(selling - lastSelling) >= 1) {
             notification.sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.coins);
             notification.priority = Notification.PRIORITY_HIGH;
         }
