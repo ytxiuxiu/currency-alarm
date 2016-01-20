@@ -1,13 +1,7 @@
 package currency.alarm.yutou.in.currencyalarm;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -24,6 +18,8 @@ import cz.msebera.android.httpclient.Header;
 
 
 /**
+ * Currency Alarm
+ * Service - Currency Alarm
  * Created by xiuxiu on 15/01/2016.
  */
 public class CurrentAlarmService extends Service {
@@ -66,7 +62,9 @@ public class CurrentAlarmService extends Service {
 
                                     notification.notify(selling, buying, time, lastSelling);
 
-                                    lastSelling = selling;
+                                    if (Math.abs(selling - lastSelling) >= 1) {
+                                        lastSelling = selling;
+                                    }
                                 }
                             }
                         }
@@ -78,10 +76,10 @@ public class CurrentAlarmService extends Service {
                     }
                 });
 
-                handler.postDelayed(this, 1000 * 60 * 1);
+                handler.postDelayed(this, 1000 * 60);
             }
         };
-        handler.postDelayed(runnable, 1000 * 1);
+        handler.postDelayed(runnable, 1000);
     }
 
 }
